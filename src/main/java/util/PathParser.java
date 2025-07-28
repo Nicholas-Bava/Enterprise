@@ -34,9 +34,9 @@ public class PathParser {
      * - "/person"                  → PathInfo{resource="person", action="index", id=null}
      * - "/person/"                 → PathInfo{resource="person", action="index", id=null}
      * - "/person/create/"          → PathInfo{resource="person", action="create", id=null}
-     * - "/person/delete/123"       → PathInfo{resource="person", action="delete", id=123}
-     * - "/person/update/456"       → PathInfo{resource="person", action="update", id=456}
-     * - "/person/789"              → PathInfo{resource="person", action="show", id=789}
+     * - "/person/delete/1"       → PathInfo{resource="person", action="delete", id=1}
+     * - "/person/update/2"       → PathInfo{resource="person", action="update", id=2}
+     * - "/person/2"              → PathInfo{resource="person", action="show", id=2}
      */
     public static PathInfo parsePath(String path) {
         // Handle null or empty path
@@ -116,26 +116,4 @@ public class PathParser {
         return new PathInfo("person", "index", null);
     }
 
-    public static class UrlBuilder {
-
-        public static String personIndex() {
-            return "/person";
-        }
-
-        public static String personCreate() {
-            return "/person/create/";
-        }
-
-        public static String personShow(int id) {
-            return "/person/" + id;
-        }
-
-        public static String personUpdate(int id) {
-            return "/person/update/" + id;
-        }
-
-        public static String personDelete(int id) {
-            return "/person/delete/" + id;
-        }
-    }
 }
