@@ -17,19 +17,18 @@ public class PersonView implements View{
 
     /**
      * Main render method - determines which specific rendering method to use
-     * based on the view name and model contents
+     * based on the model contents
      */
     @Override
     public HttpResponse render(Map<String, Object> model) {
         if (model.containsKey("isEdit") && Boolean.TRUE.equals(model.get("isEdit"))) {
             return renderPersonEdit(model);
         }
-        // Determine which type of page to render based on model contents
         if (model.containsKey("person") && !model.containsKey("people")) {
             // Single person detail page
             return renderPersonDetail(model);
         } else if (model.containsKey("people")) {
-            // Person list page (main registration page)
+            // Main registration page
             return renderPersonList(model);
         } else if (model.containsKey("errorMessage")) {
             // Error page
@@ -45,26 +44,18 @@ public class PersonView implements View{
      */
     private HttpResponse renderPersonList(Map<String, Object> model) {
         try {
-            // Extract data from model
             @SuppressWarnings("unchecked")
             List<Person> people = (List<Person>) model.get("people");
             String title = (String) model.getOrDefault("title", "Baylor Sports Updates Registration");
             String errorMessage = (String) model.get("errorMessage");
             String successMessage = (String) model.get("successMessage");
-            Integer totalPeople = (Integer) model.get("totalPeople");
-            Double averageAge = (Double) model.get("averageAge");
 
-            // Use JSoup template engine to render
+            // JSoup template engine to render
             String html = templateEngine.renderPersonListPage(
                     people != null ? people : List.of(),
                     errorMessage,
                     successMessage
             );
-
-            // Add statistics if available
-            if (totalPeople != null && totalPeople > 0 && averageAge != null) {
-                html = templateEngine.addStatistics(html, totalPeople, averageAge);
-            }
 
             // Create HTTP response
             HttpResponse response = new HttpResponse(200, "OK");
@@ -77,9 +68,6 @@ public class PersonView implements View{
         }
     }
 
-    /**
-     * Render individual person detail page
-     */
     private HttpResponse renderPersonDetail(Map<String, Object> model) {
         try {
             Person person = (Person) model.get("person");
@@ -135,9 +123,6 @@ public class PersonView implements View{
         return renderInternalError(errorMessage != null ? errorMessage : "An error occurred");
     }
 
-    /**
-     * Render 404 Not Found page
-     */
     private HttpResponse renderNotFound(String message) {
         String html = createErrorPageHtml("Not Found", message != null ? message : "Page not found");
 
@@ -146,9 +131,6 @@ public class PersonView implements View{
         return response;
     }
 
-    /**
-     * Render 500 Internal Server Error page
-     */
     private HttpResponse renderInternalError(String message) {
         String html = createErrorPageHtml("Internal Server Error", message != null ? message : "An internal error occurred");
 
@@ -157,9 +139,6 @@ public class PersonView implements View{
         return response;
     }
 
-    /**
-     * Create a simple error page HTML
-     */
     private String createErrorPageHtml(String title, String message) {
         return """
         <!DOCTYPE html>
@@ -219,9 +198,6 @@ public class PersonView implements View{
         """.formatted(title, title, escapeHtml(message));
     }
 
-    /**
-     * Escape HTML special characters to prevent XSS
-     */
     private String escapeHtml(String text) {
         if (text == null) return "";
         return text.replace("&", "&amp;")

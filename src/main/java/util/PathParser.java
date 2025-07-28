@@ -6,9 +6,9 @@ public class PathParser {
      * Represents the parsed components of a URL path
      */
     public static class PathInfo {
-        private String resource;    // e.g., "person"
-        private String action;      // e.g., "index", "create", "delete", "update", "show"
-        private Integer id;         // e.g., 123 (for specific person operations)
+        private String resource;
+        private String action;
+        private Integer id;
 
         public PathInfo(String resource, String action, Integer id) {
             this.resource = resource;
@@ -28,6 +28,7 @@ public class PathParser {
     }
 
     /**
+     * This is where the various paths are parsed out to determine the next call to make
      * URL Options:
      * - "/" or ""                  → PathInfo{resource="person", action="index", id=null}
      * - "/person"                  → PathInfo{resource="person", action="index", id=null}
@@ -58,10 +59,8 @@ public class PathParser {
             String segment = segments[0];
 
             if (segment.equals("person") || segment.isEmpty()) {
-                // "/person" → show main page
                 return new PathInfo("person", "index", null);
             } else {
-                // Unknown resource, default to person index
                 return new PathInfo("person", "index", null);
             }
         }
@@ -71,7 +70,6 @@ public class PathParser {
             String resource = segments[0];
             String second = segments[1];
 
-            // Check if second segment is an action
             switch (second) {
                 case "create":
                     return new PathInfo(resource, "create", null);
@@ -79,12 +77,10 @@ public class PathParser {
                 case "list":
                     return new PathInfo(resource, "index", null);
                 default:
-                    // Try to parse as ID for showing individual person
                     try {
                         int id = Integer.parseInt(second);
                         return new PathInfo(resource, "show", id);
                     } catch (NumberFormatException e) {
-                        // Not a valid ID, treat as unknown action → default to index
                         return new PathInfo(resource, "index", null);
                     }
             }
@@ -110,22 +106,16 @@ public class PathParser {
                     case "view":
                         return new PathInfo(resource, "show", id);
                     default:
-                        // Unknown action with ID, default to show
                         return new PathInfo(resource, "show", id);
                 }
             } catch (NumberFormatException e) {
-                // Invalid ID format
                 return new PathInfo(resource, "index", null);
             }
         }
 
-        // More than 3 segments or other cases → default to index
         return new PathInfo("person", "index", null);
     }
 
-    /**
-     * Utility method to build URLs for redirects or links
-     */
     public static class UrlBuilder {
 
         public static String personIndex() {

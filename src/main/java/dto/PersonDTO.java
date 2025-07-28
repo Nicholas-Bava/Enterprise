@@ -1,5 +1,10 @@
 package dto;
 
+/**
+ * I am using the DTO pattern to transfer Person objects without needing to use the full object. In this case
+ * they are largely the same. In general, this would help keep private information hidden and only transfer the details
+ * that are needed.
+ */
 public class PersonDTO {
     private String name;
     private String email;

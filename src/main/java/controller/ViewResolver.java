@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * ViewResolver maps logical view names to actual View implementations.
+ * ViewResolver maps view names to actual View implementations.
  * This allows controllers to return simple string names like "personList"
  * and have them resolved to actual view objects.
  */
 
 public class ViewResolver {
+    // Map of view names and views
     private Map<String, View> views;
 
     public ViewResolver() {
@@ -21,28 +22,22 @@ public class ViewResolver {
     }
 
     /**
-     * Register all available views
+     * Register views
      */
     private void registerDefaultViews() {
         PersonView personView = new PersonView();
 
-        // Register person-related views
         views.put("personList", personView);
         views.put("personDetail", personView);
         views.put("personEdit", personView);
-        views.put("error", personView); // PersonView can handle error pages too
+        views.put("error", personView);
 
-        // Future: register other views
-        // TeamView teamView = new TeamView();
-        // views.put("teamList", teamView);
-        // views.put("teamDetail", teamView);
     }
 
     /**
      * Resolve a logical view name to an actual View object
      */
     public View resolveView(String viewName) {
-        // Handle special view names
         if (viewName.startsWith("redirect:")) {
             return new RedirectView(viewName.substring(9));
         }
@@ -53,13 +48,9 @@ public class ViewResolver {
             return view;
         }
 
-        // Default fallback
         return views.get("personList");
     }
 
-    /**
-     * Register a new view
-     */
     public void registerView(String viewName, View view) {
         views.put(viewName, view);
     }

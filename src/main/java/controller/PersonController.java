@@ -11,11 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * PersonController handles Person-specific business logic.
- * Instead of returning HttpResponse directly, it returns ModelAndView objects
- * that contain the data and indicate which view should render the response.
+ * PersonController handles Person-specific business logic and returns ModelAndView objects with the requested data
+ * and information regarding the appropriate view to render.
  */
-
 public class PersonController {
 
     private PersonService personService;
@@ -32,11 +30,6 @@ public class PersonController {
             PathParser.PathInfo pathInfo = PathParser.parsePath(request.getPath());
             String method = request.getMethod().toUpperCase();
 
-            // Debug logging
-            System.out.println("🔍 PersonController handling: " + method + " " + request.getPath());
-            System.out.println("🔍 Parsed as: resource=" + pathInfo.getResource() +
-                    ", action=" + pathInfo.getAction() + ", id=" + pathInfo.getId());
-
             // Route to appropriate handler
             switch (method) {
                 case "GET":
@@ -52,7 +45,7 @@ public class PersonController {
             }
 
         } catch (Exception e) {
-            System.err.println("❌ Error in PersonController: " + e.getMessage());
+            System.err.println("Error in PersonController: " + e.getMessage());
             e.printStackTrace();
             return ModelAndView.error("Internal Server Error: " + e.getMessage());
         }
@@ -73,10 +66,10 @@ public class PersonController {
 
     private ModelAndView handlePost(HttpRequest request, PathParser.PathInfo pathInfo) {
         switch (pathInfo.getAction()) {
-            case "index":        // Handle POST to main page (form submission)
-            case "create":       // Handle POST to /person/create/
+            case "index":
+            case "create":
                 return createPerson(request);
-            case "update":       // Handle POST to /person/update/id (from edit form)
+            case "update":
                 return updatePerson(request, pathInfo.getId());
             case "delete":
                 return deletePerson(pathInfo.getId());
@@ -98,8 +91,6 @@ public class PersonController {
         }
         return ModelAndView.error("Invalid delete request");
     }
-
-    // ==================== BUSINESS OPERATIONS ====================
 
     private ModelAndView showAllPeople() {
         try {
@@ -163,11 +154,9 @@ public class PersonController {
 
             Person createdPerson = personService.createPerson(personDTO);
 
-            // Redirect to main page after successful creation
             return ModelAndView.redirect("/person");
 
         } catch (IllegalArgumentException e) {
-            // Show form with error message
             List<Person> people = personService.findAllPersons();
             return new ModelAndView("personList")
                     .addObject("people", people)

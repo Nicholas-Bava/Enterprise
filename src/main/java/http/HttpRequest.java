@@ -3,8 +3,9 @@ package http;
 import java.util.HashMap;
 import java.util.Map;
 
-
-// Class to contain the details of an HTTP Request
+/**
+ * Class to contain the details of an HTTP Request
+ */
 public class HttpRequest {
     private String method;
     private String path;

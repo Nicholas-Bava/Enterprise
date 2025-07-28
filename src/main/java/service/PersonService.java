@@ -6,13 +6,18 @@ import repository.PersonRepository;
 
 import java.util.List;
 
+/**
+ * Handles the business logic, which in this case is the CRUD operations
+ */
 public class PersonService {
 
     PersonRepository personRepository;
     private int personId;
 
-    // I implement the Singleton pattern here. The single instance of a PersonRepository is passed in to the service
-    // constructor (dependency injection). This instance is then used for query operations.
+    /**
+     * I implement the Singleton pattern here. The single instance of a PersonRepository is passed in to the service
+     * constructor (dependency injection). This instance is then used for query operations.
+     */
     public PersonService(PersonRepository personRepository) {
         this.personRepository = personRepository;
         personId = 0;

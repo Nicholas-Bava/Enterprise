@@ -23,7 +23,6 @@ public class ModelAndView {
         this.model = model != null ? model : new HashMap<>();
     }
 
-    // Add data to the model
     public ModelAndView addObject(String key, Object value) {
         model.put(key, value);
         return this;

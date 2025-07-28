@@ -3,7 +3,9 @@ package http;
 import java.util.HashMap;
 import java.util.Map;
 
-// Class to contain the details of an HTTP Response
+/**
+ * Class to contain the details of an HTTP Response
+ */
 public class HttpResponse {
 
     private int statusCode;

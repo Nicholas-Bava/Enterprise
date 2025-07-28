@@ -9,6 +9,10 @@ import org.jsoup.select.Elements;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Engine to render html of the various pages. Edit Button and Delete Button are provided on the table next to the
+ * records. The edit button will bring up a page to edit and save details. The delete button will delete the record.
+ */
 public class JSoupTemplateEngine {
 
     private String baseTemplate;
@@ -64,12 +68,12 @@ public class JSoupTemplateEngine {
 
     private void populatePeopleTable(Document doc, List<Person> people) {
         Element tbody = doc.select("#people-table tbody").first();
-        tbody.empty(); // Clear existing rows
+        tbody.empty();
 
         if (people == null || people.isEmpty()) {
             Element row = tbody.appendElement("tr");
             row.appendElement("td")
-                    .attr("colspan", "6")  // Changed to 6 columns for Edit button
+                    .attr("colspan", "6")
                     .addClass("no-data")
                     .text("No registrations yet");
             return;
@@ -78,19 +82,14 @@ public class JSoupTemplateEngine {
         for (Person person : people) {
             Element row = tbody.appendElement("tr");
 
-            // ID column
             row.appendElement("td").text(String.valueOf(person.getId()));
 
-            // Name column
             row.appendElement("td").text(person.getName());
 
-            // Email column
             row.appendElement("td").text(person.getEmail());
 
-            // Age column
             row.appendElement("td").text(String.valueOf(person.getAge()));
 
-            // Actions column with both Edit and Delete buttons
             Element actionsCell = row.appendElement("td");
 
             // Edit button
@@ -104,10 +103,10 @@ public class JSoupTemplateEngine {
                     .addClass("edit-btn")
                     .text("Edit");
 
-            // Delete button (FIXED URL)
+            // Delete button
             Element deleteForm = actionsCell.appendElement("form")
                     .attr("method", "POST")
-                    .attr("action", "/person/delete/" + person.getId())  // FIXED: was /delete/, now /person/delete/
+                    .attr("action", "/person/delete/" + person.getId())
                     .attr("style", "display:inline;");
 
             deleteForm.appendElement("button")
@@ -119,20 +118,17 @@ public class JSoupTemplateEngine {
         }
     }
 
-    // Create a form pre-populated with person data for editing
+    // Create a form pre-populated with person's data for editing
     public String renderEditPersonPage(Person person) {
         Document doc = Jsoup.parse(getBaseTemplate());
 
-        // Update page title
         doc.title("Edit Person - Baylor Sports Registration");
         doc.select("h1").first().text("Edit Person");
 
-        // Update form action and method for editing
         Element form = doc.select("form").first();
         form.attr("action", "/person/update/" + person.getId());
         form.attr("method", "POST");
 
-        // Pre-populate form fields with current values
         Element nameInput = doc.select("input[name=name]").first();
         if (nameInput != null) {
             nameInput.attr("value", person.getName());
@@ -148,13 +144,11 @@ public class JSoupTemplateEngine {
             ageInput.attr("value", String.valueOf(person.getAge()));
         }
 
-        // Change submit button text and add cancel button
         Element submitButton = doc.select("button[type=submit]").first();
         if (submitButton != null) {
             submitButton.text("Update Person");
         }
 
-        // Add cancel button
         Element formSection = doc.select(".form-section").first();
         if (formSection != null) {
             Element cancelButton = formSection.appendElement("a")
@@ -163,43 +157,22 @@ public class JSoupTemplateEngine {
                     .text("Cancel");
         }
 
-        // Update page heading
         Element formHeading = doc.select(".form-section h2").first();
         if (formHeading != null) {
             formHeading.text("Edit Person: " + person.getName());
         }
 
-        // Hide the people table on edit page
         Element table = doc.select("table").first();
         if (table != null) {
             table.remove();
         }
 
-        // Remove the "Current Registrations" heading
         Elements h2Elements = doc.select("h2");
         for (Element h2 : h2Elements) {
             if ("Current Registrations".equals(h2.text())) {
                 h2.remove();
                 break;
             }
-        }
-
-        return doc.outerHtml();
-    }
-
-    // Add dynamic content like statistics
-    public String addStatistics(String html, int totalPeople, double averageAge) {
-        Document doc = Jsoup.parse(html);
-
-        Element statsDiv = new Element("div").addClass("statistics");
-        statsDiv.appendElement("h3").text("Registration Statistics");
-        statsDiv.appendElement("p").text("Total Registrations: " + totalPeople);
-        statsDiv.appendElement("p").text("Average Age: " + String.format("%.1f", averageAge));
-
-        // Insert before the table
-        Element table = doc.select("table").first();
-        if (table != null) {
-            table.before(statsDiv);
         }
 
         return doc.outerHtml();
@@ -416,7 +389,7 @@ public class JSoupTemplateEngine {
                 </tr>
             </thead>
             <tbody>
-                <!-- Dynamic content will be inserted here -->
+                
             </tbody>
         </table>
     </div>
